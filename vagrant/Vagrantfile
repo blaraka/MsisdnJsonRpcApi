@@ -1,21 +1,21 @@
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/trusty32"
-  config.vm.network "forwarded_port", guest: 80, host: 5000
+  
+  config.vm.define "msisdnserver" do |msisdnserver|
+  end
+  
+  config.vm.network "forwarded_port", guest: 80, host: 5555
   
   config.vm.synced_folder "..", "/var/www/MsisdnJsonRpcApi"
+
+  config.vm.provision :puppet do |puppetbase|
+    puppetbase.manifests_path = 'puppet/manifests'
+    puppetbase.manifest_file = 'puppetbase.pp'
+  end
   
-  config.vm.provision :shell do |shell|
-  shell.inline = "mkdir -p /vagrant/puppet/modules
-                 (puppet module list | grep puppetlabs-apache) ||
-                 puppet module install puppetlabs/apache
-                 (puppet module list | grep willdurand/composer) ||
-                 puppet module install willdurand/composer"
-  end  
-  
-  config.vm.provision :puppet do |puppet|
-    puppet.manifests_path = 'puppet/manifests'
-    puppet.module_path = 'puppet/modules'
-    puppet.manifest_file = 'init.pp'
+  config.vm.provision :puppet do |initserver|
+    initserver.manifests_path = 'puppet/manifests'
+    initserver.manifest_file = 'initserver.pp'
   end
 end
 
