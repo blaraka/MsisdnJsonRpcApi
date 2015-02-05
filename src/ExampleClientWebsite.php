@@ -24,7 +24,7 @@
  $success = $client->call($method, $params);
   
  echo '<form method="post">';
- echo 'MSISDN: <input type="text" name="msisdn" value="' . 
+ echo 'MSISDN: <input type="text" name="msisdn" value="' .
         (array_key_exists('msisdn', $_POST) ? $_POST['msisdn'] : "") . '">';
  echo '<input type="submit" value="Parse">';
  echo '</form>';
