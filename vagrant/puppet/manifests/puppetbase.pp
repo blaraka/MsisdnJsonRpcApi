@@ -11,6 +11,7 @@ exec {'puppetmodule::composer':
     onlyif => "test ! `puppet module list | grep composer`",
 }
 
-package { "git":
+package {'git':
     ensure => "installed"
 }
+

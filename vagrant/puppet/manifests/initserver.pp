@@ -1,4 +1,4 @@
-$gittoken = ''
+$gittoken = ""
 
 Exec { path => '/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin' }
 
@@ -23,22 +23,23 @@ class { 'composer':
     auto_update => true,
 }
  
-exec { 'composergittoken':
+exec { 'composerdo::setgittoken':
     command => 'composer config -g github-oauth.github.com ${gittoken}',
     environment => ["COMPOSER_HOME=/home/vagrant"],
+    onlyif => 'test ${gittoken} != ""',
 }
  
-exec { 'composerinstall':
+exec { 'composerdo::installpackage':
     command => 'composer install -d /var/www/MsisdnJsonRpcApi',
     environment => ["COMPOSER_HOME=/home/vagrant"],
     creates => "/var/www/MsisdnJsonRpcApi/composer.lock",
 }
 
-exec { 'composerupdate':
+exec { 'composerdo::updatepackage':
     command => 'composer update -d /var/www/MsisdnJsonRpcApi',
     environment => ["COMPOSER_HOME=/home/vagrant"],
     onlyif => "test `ls /var/www/MsisdnJsonRpcApi | grep composer.lock`",
 }
 
-Class['composer']  ~>  Exec['composergittoken'] ~> Exec['composerupdate'] ~> Exec['composerinstall']
+Class['composer']  ~>  Exec['composerdo::setgittoken'] ~> Exec['composerdo::updatepackage'] ~> Exec['composerdo::installpackage']
  
